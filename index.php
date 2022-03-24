@@ -1,7 +1,7 @@
 <?php
 require 'vendor/autoload.php';
 
-$source = "test.docx";
+$source = "test3.docx";
 $phpWord = \PhpOffice\PhpWord\IOFactory::load($source);
 
 
@@ -39,7 +39,7 @@ foreach($elements as $value)
         {
             if(get_class( $v ) == 'PhpOffice\PhpWord\Element\Text')
             {
-                $import .= trim(removeFormat($v->getText()));
+                $import .= removeFormat($v->getText());
             }
 
             if(get_class( $v ) == 'PhpOffice\PhpWord\Element\Image')
@@ -77,21 +77,29 @@ $question = array();
 
 $questions_import = explode("{QUESTION BEGINS}{QUESTION TEXT}",$import);
 
+//var_dump($questions_import[0]);
+
+
 for($i=1; $i<sizeof($questions_import); $i++)
 {
     $options = array();
+    //var_dump($questions_import[$i]);
+    //var_dump(explode("{OPTION 1}",$questions_import[$i]));
 
     $question_text = explode("{OPTION 1}",$questions_import[$i])[0];
 
     $rest = explode("{OPTION 1}",$questions_import[$i])[1];
 
+    //print($question_text);
+
+    
     for($j=2; $j<8; $j++)
     {
         
         if($j != 7)
         {
             
-            if(strlen(explode("{OPTION ".$j."}",$rest)[0])>0 && explode("{OPTION ".$j."}",$rest)[0] != "")
+            if(strlen(trim(explode("{OPTION ".$j."}",$rest)[0]))>0 && trim(explode("{OPTION ".$j."}",$rest)[0]) != "")
             {
                 $options[] = trim(explode("{OPTION ".$j."}",$rest)[0]);
             }
@@ -101,7 +109,7 @@ for($i=1; $i<sizeof($questions_import); $i++)
         {
            
 
-            if(strlen(explode("{RIGHT ANSWER}", explode("{OPTION ".$j."}",$rest)[0])[0])>0 && explode("{RIGHT ANSWER}", explode("{OPTION ".$j."}",$rest)[0])[0] != "")
+            if(strlen(trim(explode("{RIGHT ANSWER}", explode("{OPTION ".$j."}",$rest)[0])[0]))>0 && trim(explode("{RIGHT ANSWER}", explode("{OPTION ".$j."}",$rest)[0])[0]) != "")
             {
                 $options[] = trim(explode("{RIGHT ANSWER}", explode("{OPTION ".$j."}",$rest)[0])[0]);
             }
@@ -132,6 +140,8 @@ for($i=1; $i<sizeof($questions_import); $i++)
 
     
 }
+
+
 
 //var_dump($questions);
 echo "<pre>";
