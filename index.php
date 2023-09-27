@@ -2,6 +2,9 @@
 require 'vendor/autoload.php';
 
 $source = "test3.docx";
+if(isset($_GET['source'])){
+    $source = $_GET['source'].".docx";
+}
 $phpWord = \PhpOffice\PhpWord\IOFactory::load($source);
 
 
@@ -72,7 +75,7 @@ $string = preg_replace('~\$\$[0-9]+~', '', $import);
 $placeholders = [];
 $z = 0;
 $string = preg_replace_callback('~(<img[^>]*>(</img>)?)~', function ($matches) use (&$placeholders, &$z) {
-    $key = '$$'.$z++;
+    $key = '$$##$$'.$z++.'$$##$$';
     $placeholders[$key] = $matches[0];
 
     return $key;
@@ -80,9 +83,12 @@ $string = preg_replace_callback('~(<img[^>]*>(</img>)?)~', function ($matches) u
 
 $string = htmlentities($string);
 
+
+
 foreach ($placeholders as $key => $placeholder) {
     $string = str_replace($key, $placeholder, $string);
 }
+
 
 $import = $string;
 
